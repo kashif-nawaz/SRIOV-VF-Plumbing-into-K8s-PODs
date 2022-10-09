@@ -9,7 +9,7 @@
 ## Solution
 * SRIOV CNI solves the above described problem with plumbing  SRIOV VFs into Containerized workloads. 
 ## Implementation Details 
-   ![Lab Topology](./images/lab_topology.jpg)
+   ![Lab Topology](./images/topology.jpg)
   ### Work Flow:-
   - Bootstrap your infrastructure with your favourite tool.
   - Bring up K8s cluster with your favourite deployment method.
