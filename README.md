@@ -24,6 +24,7 @@
   - Create POD by referring SRIOV network created via SRIOV NAD.
   - Attach to container created so; to check if SRIOV VF is plumbed into the Container or not.
   - If vlan tagging is required to segregate traffic over SRIOV PF via vlan tagging then add the required VLAN tag over particular SRIOV VF.
+  - End to End Connectivity verification.
   ### Boot Strapping Infrasture 
   * How to bootstrap bare metal and virtualized infrastructure with the help of Canonical MaaS [Juniper_CN2_K8s_Over_MaaS_Managed_Infra
 ](https://github.com/kashif-nawaz/Juniper_CN2_K8s_Over_MaaS_Managed_Infra) 
