@@ -1,6 +1,7 @@
 # SRIOV VF Plumbing into K8s PODs
 
 ## Problem Statement
+[SRIOV_Basics](https://www.intel.com/content/www/us/en/developer/articles/technical/configure-sr-iov-network-virtual-functions-in-linux-kvm.html)
 * In  few of earlier blogs [Git Home Page](https://github.com/kashif-nawaz?tab=repositories) I have discussed  the needs for bare metal to run containerized work loads / network functions (CNF).
 * Running CNF (k8s cluster) over bare metals is not enough until performance mode networking capabilities are not plumbed into containerized work loads.
 * If  a containerized work load supports  DPDK;   then attachment of such POD with K8s worker nodes DPDK PMD bound interface could suffice the network throughput requirements. 
