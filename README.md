@@ -17,13 +17,13 @@
   - Ensure that Multus (meta CNI) is also enabled on k8s cluster.
   - Enable SRIOV capabilities on required worker node by adding required parameters into the grub.
   - Create required number of SRIOV virtual functions. 
+  - Create/ Copy SRIOV CNI Binary into worker nodes 
   - Create SRIOV CNI ConfigMap.
   - Add SRIOV CNI Plugin into k8s cluster.
   - Verify if SRIOV VFs are available as an allocatable resource from a particular worker node.
   - Create SRIOV Network Attachment Defination (NAD) file.
   - Create POD by referring SRIOV network created via SRIOV NAD.
-  - Attach to container created so; to check if SRIOV VF is plumbed into the Container or not.
-  - If vlan tagging is required to segregate traffic over SRIOV PF via vlan tagging then add the required VLAN tag over particular SRIOV VF.
+  - POD Creation and SRIOV VF attachment verification
   - End to End Connectivity verification.
   ### Boot Strapping Infrasture 
   * How to bootstrap bare metal and virtualized infrastructure with the help of Canonical MaaS [Juniper_CN2_K8s_Over_MaaS_Managed_Infra
@@ -33,6 +33,10 @@
   ### Enabling SRIOV Capabilities into Worker Nodes and Creating SRIOV VFs
   * In wiki [Extending-SRIOV-VFs-to-Containers
 ](https://github.com/kashif-nawaz/Extending-SRIOV-VFs-to-Containers) I have discussed how to enable SRIOV capabilities in host OS and then creating SRIOV VFs which can survive machine reboot.
+  ### Create / Copy SRIOV CNI Binary Into Worker Nodes
+  * SRIOV CNI binary needs to be built on each worker node by following the instructions given in [Ref](https://github.com/openshift/sriov-cni)
+  * If you don't have proper Go development enviornment then this binary build process will fail and in that case you need to manually copy the SRIOV binary into your enviornmet.  
+  * I have uploaded SRIOV CNI Binary to this wiki and it should be copied to each worker node in /opt/cni/bin/ dir. 
   ### Create SRIOV CNI ConfigMap
   * In order to create configMap you need to know detail information for SRIOV VFs created over NIC of a particular worker node.
 ```
@@ -160,8 +164,9 @@ metadata:
 spec:
   config: |
     {
-        "type": "host-device",
+        "type": "sriov",
         "cniVersion": "0.3.1",
+        "vlan": 201,
         "name": "sriov-201",
         "ipam": {
           "type": "host-local",
@@ -270,7 +275,7 @@ spec:
   nodeName: worker3
 
 ```
-### Verifications
+### POD Creation Verifications
 * Verify PODs Creation.
 
 ```
@@ -342,15 +347,11 @@ kubectl exec sriov-pod-201-1 -- ip addr
     inet6 fe80::70a6:6bff:fef6:82c3/64 scope link
        valid_lft forever preferred_lft forever
 ```
-### Allow VLAN Tagging on Host OS SRIOV VF
-* Hence, I am doing traffic segregation on SRIOV PF so I need to add VLAN tags on  corropsonding SRIOV VF which got attached with  PODs, created in the above sequence.
-* In above snippet net1 from each POD is created over SRIOV VF which got plumbed into POD and net1 MAC address coming from the plumbed in SRIOV VF. 
-* Let's find SRIOV VF and each worker node which got attached to the POD and add the VLAN 201 over it.
+ 
+### SRIOV VF attachment verfication 
+* SRIOV CNI will not only attach the VFs with K8s PODs but will also dynamically configure the VLAN ID over the corresponding VF if VLAN ID was referred in NAD file.
   - SRIOV-POD-201-1 is created on Worker1 
 ```
-vlan=201
-vif_id=$(ip link show | grep 56:7f:f1:5e:ac:52 | awk '{print $2}')
-ip link set dev eno2 vf ${vif_id} vlan  ${vlan}
 ip link show 
 eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9000 qdisc mq state UP mode DEFAULT group default qlen 1000
     link/ether bc:30:5b:f2:87:52 brd ff:ff:ff:ff:ff:ff
@@ -365,9 +366,6 @@ eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9000 qdisc mq state UP mode DEFAULT 
 ```
 - SRIOV-POD-201-2 is created on Worker2
 ```
-vlan=201
-vif_id=$(ip link show | grep 0a:43:80:e7:80:15 | awk '{print $2}')
-ip link set dev eno2 vf ${vif_id} vlan  ${vlan}
 ip link show
 5: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9000 qdisc mq state UP mode DEFAULT group default qlen 1000
     link/ether bc:30:5b:f2:3f:72 brd ff:ff:ff:ff:ff:ff
@@ -383,10 +381,6 @@ ip link show
 - SRIOV-POD-201-3 is created on Worker3
 
 ```
-vlan=201
-vif_id=$(ip link show | grep a2:1f:bc:be:1c:7e | awk '{print $2}')
-ip link set dev eno2 vf ${vif_id} vlan  ${vlan}
-
  ip link show
  eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9000 qdisc mq state UP mode DEFAULT group default qlen 1000
     link/ether bc:30:5b:f1:c2:02 brd ff:ff:ff:ff:ff:ff
