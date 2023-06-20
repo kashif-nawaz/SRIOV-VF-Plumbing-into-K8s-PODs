@@ -439,3 +439,11 @@ lab@fabric-switch> show arp no-resolve | match 201.
 0a:43:80:e7:80:15 192.168.201.3   vlan.201             none
 a2:1f:bc:be:1c:7e 192.168.201.4   vlan.201             none
 ```
+## References
+
+* https://www.intel.com/content/www/us/en/developer/articles/technical/configure-sr-iov-network-virtual-functions-in-linux-kvm.html
+* https://docs.nvidia.com/networking/display/OFED510660/Kubernetes+Using+SR-IOV
+* https://docs.openshift.com/container-platform/4.7/networking/hardware_networks/about-sriov.html
+* https://ubuntu.com/kubernetes/docs/cni-sriov
+* https://cloud.google.com/anthos/clusters/docs/bare-metal/latest/how-to/sriov
+* https://docs.okd.io/4.11/networking/hardware_networks/about-sriov.html
