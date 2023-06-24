@@ -4,7 +4,7 @@
 
 [SRIOV Basics](https://www.intel.com/content/www/us/en/developer/articles/technical/configure-sr-iov-network-virtual-functions-in-linux-kvm.html)
 
--   In few of earlier blogs [Juniper_CN2_K8s_Over_MaaS_Managed_Infra](<https://github.com/kashif-nawaz/Juniper_CN2_K8s_Over_MaaS_Managed_Infra>) [charmed-kubernetes-on-bare-metals]( https://github.com/kashif-nawaz/charmed-kubernetes-on-bare-metals) I have discussed the needs for bare metal to run containerized workloads / network functions (CNF).
+-   In few of earlier blogs [Juniper_CN2_K8s_Over_MaaS_Managed_Infra](https://github.com/kashif-nawaz/Juniper_CN2_K8s_Over_MaaS_Managed_Infra) [charmed-kubernetes-on-bare-metals](https://github.com/kashif-nawaz/charmed-kubernetes-on-bare-metals) I have discussed the needs for bare metal to run containerized workloads / network functions (CNF).
 -   Running CNF (k8s cluster) over bare metals is not enough until performance mode networking capabilities are not plumbed into containerized workloads.
 -   If a containerized workload supports DPDK; then attachment of such POD with K8s worker nodes DPDK PMD bound interface could suffice the network throughput requirements.
 -   What if a containerized workload does not support DPDK but still require high throughput network interfaces.
@@ -15,7 +15,7 @@
 
 ## Implementation Details
 
-![Lab Topology](./images/topology.jpg)
+### ![A picture containing text, screenshot, diagram, parallel Description automatically generated](media/caa78281e181bb7a86deaee6838c76d7.jpeg)
 
 ### Work Flow: -
 
@@ -36,7 +36,7 @@
 
 ### Boot Strapping Infrastructure
 
--   How to bootstrap bare metal and virtualized infrastructure with the help of Canonical MaaS [Juniper_CN2_K8s_Over_MaaS_Managed_Infra ](https://github.com/kashif-nawaz/Juniper_CN2_K8s_Over_MaaS_Managed_Infra)
+-   How to bootstrap bare metal and virtualized infrastructure with the help of [Canonical MAAS.](https://github.com/kashif-nawaz/Juniper_CN2_K8s_Over_MaaS_Managed_Infra)
 
 ### Bring UP K8s Cluster
 
@@ -44,12 +44,12 @@
 
 ### Enabling SRIOV Capabilities into Worker Nodes and Creating SRIOV VFs
 
--   In wiki [Extending-SRIOV-VFs-to-Containers] (https://github.com/kashif-nawaz/Extending-SRIOV-VFs-to-Containers) I have discussed how to enable SRIOV capabilities in host OS and then creating SRIOV VFs which can survive machine reboot.
+-   In [wiki](https://github.com/kashif-nawaz/Extending-SRIOV-VFs-to-Containers) , I have discussed how to enable SRIOV capabilities in host OS and then creating SRIOV VFs which can survive machine reboot.
 
 ### Create / Copy SRIOV CNI Binary into Worker Nodes
 
 -   SRIOV CNI binary needs to be built on each worker node by following the instructions given in [Ref](https://github.com/openshift/sriov-cni)
--   If you don't have proper Go development environment then this binary build process will fail and in that case you need to manually copy the SRIOV binary into your environment.
+-   If you don't have proper Go development environment, then this binary build process will fail and in that case you need to manually copy the SRIOV binary into your environment.
 -   I have uploaded SRIOV CNI Binary to this wiki and it should be copied to each worker node in /opt/cni/bin/ dir.
 
 ### Create SRIOV CNI ConfigMap
@@ -122,7 +122,7 @@ data:
 
 ### Add SRIOV CNI Plugin into K8s Cluster
 
--   Clon the git wiki [sriov-network-device-plugin ](https://github.com/k8snetworkplumbingwg/sriov-network-device-plugin) in your environment.
+-   Clon the git wiki in your environment.
 -   Cretae SRIOV Plugin daemonset.
 
 ```
@@ -376,10 +376,10 @@ kubectl exec sriov-pod-201-1 -- ip addr
        valid_lft forever preferred_lft forever
 ```
 
-### SRIOV VF attachment verfication
+### SRIOV VF Attachment Verification
 
 -   SRIOV CNI will not only attach the VFs with K8s PODs but will also dynamically configure the VLAN ID over the corresponding VF if VLAN ID was referred in NAD file.
-    -   SRIOV-POD-201-1 is created on Worker1
+    -   SRIOV-POD-201-1 is created on Worker1.
 
 ```
 ip link show 
